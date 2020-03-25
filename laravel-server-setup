@@ -1,13 +1,15 @@
 #!/bin/bash
 
-# Variables
 echo 'Enter laravel project directory (e.g. /var/www/laravel):'
 read laravel_project_directory
 
 if [ ! -d $laravel_project_directory ]
 then
    echo "The '$laravel_project_directory' directory does not exist." 
+   exit 1
 fi
+
+laravel_public_directory="$laravel_project_directory/public"
 
 echo 'Enter laravel server name (e.g. example.com). Leave blank if none:'
 read laravel_server_name
@@ -27,30 +29,22 @@ read mysql_user_name
 echo 'Enter mysql user password:'
 read mysql_user_password
 
-#
 # Update & Upgrade
-#
 sudo apt-get update -y
 sudo apt-get upgrade -y
 
-#
 # Install and setup nginx
-#
 sudo apt-get install nginx -y
 sudo systemctl start nginx
 sudo systemctl enable nginx
 
-#
-# Install and setup php
-#
+# Install and setup PHP 7.2
 sudo apt install php7.2 php7.2-curl php7.2-common php7.2-cli php7.2-MySQL php7.2-mbstring php7.2-fpm php7.2-XML php7.2-zip -y
 sudo sed -i -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php/7.2/fpm/php.ini
 sudo systemctl start php7.2-fpm
 sudo systemctl enable php7.2-fpm
 
-#
 # Install and setup mariadb with user and database
-#
 sudo apt install mariadb-server mariadb-client -y
 sudo mysql -e "UPDATE mysql.user SET Password = PASSWORD('$mysql_root_password') WHERE User = 'root'"
 sudo mysql -e "DROP USER ''@'localhost'"
@@ -58,34 +52,38 @@ sudo mysql -e "DROP USER ''@'$(hostname)'"
 sudo mysql -e "DROP DATABASE test"
 sudo mysql -e "FLUSH PRIVILEGES"
 sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$mysql_user_name'@'localhost' IDENTIFIED BY '$mysql_user_password';"
-sudo mysql -e "CREATE DATABASE $mysql_database_name"
+sudo mysql -e "CREATE DATABASE IF NOT EXISTS $mysql_database_name"
 
-#
 # Install composer
-#
 sudo apt-get install composer -y
 
-#
-# Setup nginx config
-#
-sudo cp ./nginx.conf /etc/nginx/sites-available/laravel
-sudo sed -i -e "s/root /var/www/html;/root $laravel_project_directory;/g" /etc/nginx/sites-available/laravel
+# Update nginx config
+sudo cp nginx.conf /etc/nginx/sites-available/laravel
+sudo sed -i -e "s/root \/var\/www\/html;/root ${laravel_public_directory//\//\\/};/g" /etc/nginx/sites-available/laravel
 sudo sed -i -e "s/server_name _;/server_name $laravel_server_name;/g" /etc/nginx/sites-available/laravel
 
-#
+# Create symbolic link in nginx sites-enabled
+sudo rm /etc/nginx/sites-enabled/laravel
+sudo ln -s /etc/nginx/sites-available/laravel /etc/nginx/sites-enabled/laravel
+
 # Restart nginx to update config changes 
-#
 sudo systemctl restart nginx
 
-#
+# Set laravel project directory permissions
+sudo chown -R www-data:www-data $laravel_project_directory
+sudo usermod -a -G www-data $USER
+sudo find $laravel_project_directory -type f -exec chmod 644 {} \;
+sudo find $laravel_project_directory -type d -exec chmod 755 {} \;
+sudo chgrp -R www-data storage bootstrap/cache
+sudo chmod -R ug+rwx storage bootstrap/cache
+
 # Run composer install
-#
+sudo chown -R $USER ~/.composer
+sudo chown -R $user $laravel_project_directory
 cd $laravel_project_directory
 composer install
 
-#
 # Finish message
-#
 echo '-- Laravel Server Setup Complete --'
 nginx -v
 php -v

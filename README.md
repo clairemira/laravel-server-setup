@@ -2,15 +2,27 @@
 
 ## Installation
 
-A simple script to setup a Ubuntu server with Nginx, PHP 7.2 and MariaDB for running Laravel applications.
+A simple bash script to setup a Ubuntu server with Nginx, PHP 7.2 and MariaDB specifically for running Laravel applications.
+
+### The script performs the following actions in this order:
+
+1. Performs an `apt-get update` && `apt-get upgrade`
+2. Installs and enables Nginx
+3. Installs PHP 7.2 including other php packages required by Laravel
+4. Installs and configures MariaDB
+5. Installs Composer
+6. Creates a `laravel` Nginx config file in sites-available and creates a sym link to it in sites-enabled 
+7. Sets Laravel project directory permissions 
+8. Performs a `composer install` inside your laravel project directory
 
 ### Prerequisites
 
-No prerequisites.
+1. Have a freshly installed Ubuntu server
+2. `git clone` your Laravel project directory somewhere onto the server. E.g. `/var/www/`
 
 ### Installing
 
-First clone the repository and navigate to the script
+First clone the `tdshaw/laravel-server-setup` repository and navigate to the script:
 
 ```
 cd ~
@@ -18,15 +30,22 @@ git clone https://github.com/tdshaw/laravel-server-setup.git
 cd laravel-server-setup
 ```
 
-Run the script
+Run the script and follow the prompts.
 
 ```
 ./laravel-server-setup
 ```
 
-Example:
+- - - -
+
+Example usage:
 ```
 $ ./laravel-server-setup
+
+Enter laravel project directory (e.g. /var/www/laravel):
+/var/www/laravel
+Enter laravel server name (e.g. example.com). Leave blank if none:
+example.com
 Set mysql root password:
 root
 Enter mysql database name:
@@ -37,4 +56,3 @@ Enter mysql user password:
 laravel_password
 ```
 
-And that's it!
