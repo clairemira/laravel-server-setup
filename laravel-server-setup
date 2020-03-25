@@ -9,8 +9,8 @@ read mysql_user_name
 echo 'Enter mysql user password:\n'
 read mysql_user_password
 # Update & Upgrade
-sudo apt-get update
-sudo apt-get upgrade
+sudo apt-get update -y
+sudo apt-get upgrade -y
 # Install and setup nginx
 sudo apt-get install nginx -y
 sudo systemctl start nginx
@@ -32,11 +32,8 @@ sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$mysql_user_name'@'localhost' IDE
 sudo mysql -e "CREATE DATABASE $mysql_database_name"
 # Install composer
 sudo apt-get install composer -y
-echo '-- Laravel Server Setup Complete --\n\n'
+echo '-- Laravel Server Setup Complete --'
 nginx -v
-echo '\n\n'
 php -v
-echo '\n\n'
 composer -V
-echo '\n\n'
 mysql -V
