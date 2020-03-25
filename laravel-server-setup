@@ -1,12 +1,12 @@
 #!/bin/bash
 # Variables
-echo 'Set mysql root password:\n'
+echo 'Set mysql root password:'
 read mysql_root_password
-echo 'Enter mysql database name:\n'
+echo 'Enter mysql database name:'
 read mysql_database_name
-echo 'Enter mysql user name:\n'
+echo 'Enter mysql user name:'
 read mysql_user_name
-echo 'Enter mysql user password:\n'
+echo 'Enter mysql user password:'
 read mysql_user_password
 # Update & Upgrade
 sudo apt-get update -y
