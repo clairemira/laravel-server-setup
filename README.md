@@ -1,9 +1,9 @@
-# Project Title
+# Title
 
 Laravel Server Setup
 
-## Getting Started
-Sets up a Ubuntu server with Nginx, PHP 7.2 and MariaDB.
+## About
+
 A simple script to setup a Ubuntu server with Nginx, PHP 7.2 and MariaDB for running Laravel applications.
 
 ### Prerequisites
