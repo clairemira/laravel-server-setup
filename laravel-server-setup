@@ -79,7 +79,7 @@ sudo chmod -R ug+rwx storage bootstrap/cache
 
 # Run composer install
 sudo chown -R $USER ~/.composer
-sudo chown -R $user $laravel_project_directory
+sudo chown -R $USER $laravel_project_directory
 cd $laravel_project_directory
 composer install
 
