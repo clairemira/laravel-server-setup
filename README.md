@@ -24,11 +24,11 @@ A simple bash script to setup a Ubuntu server with Nginx, PHP 7.2 and MariaDB sp
 
 ### Installing
 
-First clone the `tdshaw/laravel-server-setup` repository onto your fresh Ubuntu server and navigate to the script:
+First clone the `clairemira/laravel-server-setup` repository onto your fresh Ubuntu server and navigate to the script:
 
 ```
 cd ~
-git clone https://github.com/tdshaw/laravel-server-setup.git
+git clone https://github.com/clairemira/laravel-server-setup.git
 cd laravel-server-setup
 ```
 
